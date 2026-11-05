@@ -2,8 +2,9 @@
 
 // app/page.tsx — Ema Tosin · Project Manager portfolio (flat redesign)
 // Replace your whole app/page.tsx with this file. Needs only Next.js (App Router) + Tailwind.
-// EDIT ME: everything you will want to change is in the DATA block below (all content is SAMPLE).
+// EDIT ME: everything you will want to change is in the DATA block below (projects are real now; STATS, email and LinkedIn are still SAMPLE).
 // Photo: put a picture in /public (e.g. /ema.jpg) and set PERSON.photo = '/ema.jpg'.
+// Project previews: each project's shots[] are image URLs; to use your own, put images in /public and list them like '/talim-1.png'.
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Bricolage_Grotesque, DM_Sans, DM_Mono } from 'next/font/google';
@@ -17,7 +18,10 @@ const mono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--
 const PERSON = {
   name: 'Ema Tosin',
   role: 'Project Manager',
-  email: 'ema@example.com',
+  email: 'tosin.ema01@gmail.com',
+  phone: '+1 226 606 7046',
+  phoneRaw: '+12266067046',
+  location: 'Toronto, Ontario',
   linkedin: '#',
   photo: '',
   intro: 'I plan, coordinate and deliver technology projects, keeping people, budgets and deadlines pointing the same way.',
@@ -30,13 +34,13 @@ const STATS = [
   { v: '6 yrs', l: 'In technology' },
 ];
 
-type Ext = 'pdf' | 'xlsx' | 'docx' | 'pptx' | 'gantt';
-type FileItem = { name: string; ext: Ext; size: string };
 type Tone = 'blue' | 'green' | 'sand' | 'clay';
+type Tag = 'Fintech' | 'Commerce' | 'Impact';
+type LinkItem = { label: string; url: string };
 type Project = {
-  id: string; name: string; tag: 'Infrastructure' | 'Service' | 'People'; year: string; tone: Tone;
-  summary: string; duration: string; team: string;
-  outcomes: [string, string][]; milestones: [string, string][]; files: FileItem[];
+  id: string; name: string; tag: Tag; kind: string; status: string; tone: Tone;
+  summary: string; outcomes: [string, string][]; features: string[];
+  shots: string[]; fit?: 'cover' | 'contain'; links: LinkItem[];
 };
 
 const TONES: Record<Tone, { bg: string; ink: string }> = {
@@ -46,56 +50,107 @@ const TONES: Record<Tone, { bg: string; ink: string }> = {
   clay: { bg: '#F1E0D8', ink: '#A04A2B' },
 };
 
-const f = (name: string, ext: Ext, size: string): FileItem => ({ name, ext, size });
+const L = (label: string, url: string): LinkItem => ({ label, url });
 
 const PROJECTS: Project[] = [
   {
-    id: 'network', name: 'Office Network Rollout', tag: 'Infrastructure', year: '2025', tone: 'blue',
-    summary: 'Planned and delivered a new network across six offices with no working days lost, coordinating vendors, site teams and the IT desk.',
-    duration: '5 months', team: '14 people',
-    outcomes: [['6', 'Sites live'], ['0', 'Days of downtime'], ['+18%', 'Faster connections']],
-    milestones: [['Site surveys complete', 'Wk 3'], ['Vendor contracts signed', 'Wk 6'], ['Pilot office live', 'Wk 12'], ['All sites handed over', 'Wk 20']],
-    files: [f('Project-Charter', 'pdf', '420 KB'), f('Rollout-Plan', 'gantt', '96 KB'), f('Budget-Tracker', 'xlsx', '210 KB'), f('Vendor-Contracts', 'docx', '1.2 MB'), f('Handover-Report', 'pptx', '860 KB')],
+    id: 'empowerdreamz', name: 'EmpowerDreamz Foundation', tag: 'Impact', kind: 'Website', status: 'Live · 4th water project in progress', tone: 'blue', fit: 'cover',
+    summary: 'Website for a Nigerian foundation that builds solar-powered water systems for rural communities. It shows the programmes, project pages, film and photo gallery, and takes donations online.',
+    outcomes: [['3', 'Water projects built'], ['3', 'States reached'], ['4,000+', 'Lives changed']],
+    features: ['Programmes: clean water now, education from 2027, healthcare from 2028', 'A page for each community project, plus photo gallery and build film', 'Online donations', 'Content managed from an admin area'],
+    shots: [
+      'https://firebasestorage.googleapis.com/v0/b/empowerdreamz-4a302.firebasestorage.app/o/media%2F1791072191840-whatsapp-image-2026-09-20-at-12.45.23-pm.jpeg?alt=media&token=ba6e138b-96e0-4b16-8a97-8f4c1cd1e066',
+      'https://firebasestorage.googleapis.com/v0/b/empowerdreamz-4a302.firebasestorage.app/o/media%2F1790124924404-a.png?alt=media&token=0c268f18-8622-4aa3-a797-54d0e07ca0c5',
+      'https://firebasestorage.googleapis.com/v0/b/empowerdreamz-4a302.firebasestorage.app/o/media%2F1790125359564-f.png?alt=media&token=c5f7c0e2-a3de-4359-91b7-7dcc628ad12b',
+      'https://www.empowerdreamz.org/assets/carrying-water.jpg',
+    ],
+    links: [L('Live website', 'https://www.empowerdreamz.org/')],
   },
   {
-    id: 'helpdesk', name: 'Helpdesk Ticketing Migration', tag: 'Service', year: '2025', tone: 'clay',
-    summary: 'Moved the support team from email and spreadsheets to a ticketing system, with training, clear priorities and reporting from day one.',
-    duration: '4 months', team: '9 people',
-    outcomes: [['-35%', 'Time to first reply'], ['100%', 'Tickets tracked'], ['40', 'Staff trained']],
-    milestones: [['Requirements agreed', 'Wk 2'], ['Tool configured', 'Wk 7'], ['Team training', 'Wk 11'], ['Old inbox retired', 'Wk 16']],
-    files: [f('Requirements', 'docx', '310 KB'), f('Migration-Plan', 'gantt', '88 KB'), f('Training-Deck', 'pptx', '4.1 MB'), f('Weekly-Status', 'pdf', '540 KB')],
+    id: 'talim', name: 'Talim', tag: 'Impact', kind: 'Website + mobile app', status: 'Live · iOS app out, Android coming', tone: 'green',
+    summary: 'School management platform that brings admissions, attendance, timetables, results, fees and messages into one record, with separate portals for administrators, teachers, parents and students.',
+    outcomes: [['4', 'Stakeholder portals'], ['6', 'Types of institution'], ['iOS', 'Mobile app live']],
+    features: ['Admin, teacher, parent and student portals on one shared record', 'Attendance, timetable, assessments and grading', 'Fee payments, receipts and announcements', 'Mobile app for parents, teachers and learners', 'Verified academic records, on the roadmap'],
+    shots: [
+      'https://www.mytalim.com/images/landing/product/admin-dashboard-demo.png',
+      'https://www.mytalim.com/images/landing/product/classes-demo.png',
+      'https://www.mytalim.com/images/landing/product/teacher-dashboard-demo.png',
+      'https://www.mytalim.com/images/landing/product/parent-children-demo.png',
+    ],
+    links: [L('Live website', 'https://www.mytalim.com/'), L('iOS app on the App Store', 'https://apps.apple.com/us/app/mytalim/id6783429017')],
   },
   {
-    id: 'devices', name: 'Staff Device Refresh', tag: 'Infrastructure', year: '2024', tone: 'green',
-    summary: 'Replaced ageing laptops for the whole company in waves, tracking every device from order to hand-over.',
-    duration: '3 months', team: '6 people',
-    outcomes: [['210', 'Devices replaced'], ['3%', 'Under budget'], ['4.8/5', 'Staff rating']],
-    milestones: [['Inventory audit', 'Wk 2'], ['Devices ordered', 'Wk 4'], ['Waves 1 and 2 handed over', 'Wk 8'], ['Old devices recycled', 'Wk 12']],
-    files: [f('Device-Inventory', 'xlsx', '640 KB'), f('Wave-Schedule', 'gantt', '72 KB'), f('Cost-Report', 'pdf', '390 KB')],
+    id: 'ethnihub', name: 'EthniHub', tag: 'Commerce', kind: 'Website + apps', status: 'Live · Helsinki, Vantaa and Espoo', tone: 'clay',
+    summary: 'Cultural marketplace in Finland for food, groceries, wellness and events. Customers order from local merchants, riders deliver, and merchants run their own storefronts.',
+    outcomes: [['4', 'Services in one app'], ['3', 'Apps: customer, merchant, rider'], ['3', 'Cities served']],
+    features: ['EthniEats, EthniMarket, EthniCare and EthniEvent under one account', 'Merchant storefronts with orders and analytics', 'Rider app with earnings and tracking', 'Checkout with real-time order tracking'],
+    shots: [
+      'https://customer.ethnihub.fi/home/customer-mockup.png',
+      'https://customer.ethnihub.fi/home/four-services/eats.png',
+      'https://customer.ethnihub.fi/home/four-services/market.png',
+      'https://customer.ethnihub.fi/home/four-services/care.png',
+    ],
+    links: [L('Live website', 'https://customer.ethnihub.fi/')],
   },
   {
-    id: 'onboarding', name: 'Digital Onboarding Portal', tag: 'People', year: '2024', tone: 'sand',
-    summary: 'Worked with HR and IT to give new joiners one place for forms, accounts and equipment, ready before their first day.',
-    duration: '6 months', team: '11 people',
-    outcomes: [['3 days', 'Saved per hire'], ['92%', 'Ready on day one'], ['1', 'Single checklist']],
-    milestones: [['Process mapped', 'Wk 4'], ['Prototype approved', 'Wk 10'], ['Pilot with 2 teams', 'Wk 18'], ['Company-wide launch', 'Wk 24']],
-    files: [f('Process-Map', 'pdf', '730 KB'), f('Launch-Roadmap', 'gantt', '104 KB'), f('Stakeholder-Plan', 'docx', '280 KB'), f('Pilot-Feedback', 'xlsx', '190 KB')],
+    id: 'truust', name: 'Truust', tag: 'Commerce', kind: 'Website + mobile app', status: 'Website live · app coming to iOS and Android', tone: 'sand',
+    summary: 'Social marketplace for Nigeria where buyers and sellers chat, lock payment in escrow and choose a rider by live bid, so nobody has to pay first and hope.',
+    outcomes: [['3', 'Pillars: chat, escrow, riders'], ['5', 'Steps, listing to payout']],
+    features: ['Social feed of listings from people you follow', 'In-app chat and price negotiation', 'Escrow that holds funds until delivery is confirmed', 'Riders bid on each delivery', 'Wallet with bank withdrawals and dispute review'],
+    shots: ['https://www.truust.com.ng/truust-hero-1400.webp', 'https://www.truust.com.ng/twitter%20header.png'],
+    links: [L('Live website', 'https://www.truust.com.ng/')],
   },
   {
-    id: 'vendors', name: 'Vendor Consolidation', tag: 'Service', year: '2023', tone: 'clay',
-    summary: 'Reviewed every IT supplier, merged overlapping contracts and renegotiated terms without disrupting daily support.',
-    duration: '4 months', team: '5 people',
-    outcomes: [['22', 'Contracts reviewed'], ['-17%', 'Annual spend'], ['9', 'Suppliers kept']],
-    milestones: [['Supplier audit', 'Wk 3'], ['Options paper approved', 'Wk 7'], ['New terms signed', 'Wk 13']],
-    files: [f('Supplier-Audit', 'xlsx', '520 KB'), f('Options-Paper', 'pdf', '610 KB'), f('Negotiation-Plan', 'docx', '240 KB')],
+    id: 'skribe', name: 'Skribe', tag: 'Fintech', kind: 'Website + mobile app', status: 'Launching', tone: 'blue',
+    summary: 'Subscription tracker built around a real card. Subscriptions are found from card charges, and transfers and bill payments run through the card balance.',
+    outcomes: [['2', 'Cards at launch: naira and dollar'], ['Auto', 'Subscription detection']],
+    features: ['Naira and dollar cards', 'Subscriptions detected from card charges', 'Card balance for transfers and bill payments', 'Ongoing and expired subscriptions, with a spending view'],
+    shots: ['/skribe-1.png', '/skribe-2.png', '/skribe-3.png'],
+    links: [L('Live website', 'https://www.skribesub.com/')],
   },
   {
-    id: 'security', name: 'Security Awareness Programme', tag: 'People', year: '2023', tone: 'blue',
-    summary: 'Ran a company-wide programme of short trainings and simulated phishing, with simple reporting for leadership.',
-    duration: '3 months', team: '4 people',
-    outcomes: [['96%', 'Completed training'], ['-60%', 'Phishing clicks'], ['3', 'Campaign rounds']],
-    milestones: [['Curriculum agreed', 'Wk 2'], ['Round 1 launched', 'Wk 5'], ['Results briefing', 'Wk 12']],
-    files: [f('Programme-Plan', 'pdf', '350 KB'), f('Campaign-Calendar', 'gantt', '64 KB'), f('Results-Summary', 'pptx', '2.6 MB')],
+    id: 'payton', name: 'Payton', tag: 'Fintech', kind: 'Mobile app', status: 'Live on Google Play', tone: 'green',
+    summary: 'Android app for paying data, airtime and TV subscriptions quickly, with instant notifications and a range of supported providers.',
+    outcomes: [['100+', 'Downloads'], ['5.0', 'Play Store rating'], ['3', 'Bill types: data, airtime, TV']],
+    features: ['Pay for data, airtime and TV subscriptions', 'Instant payment notifications', 'Wide range of supported providers', 'Data encrypted in transit'],
+    shots: [
+      'https://play-lh.googleusercontent.com/fjUK_naMYTV_JWRU1lbiyZRkPTGscU6cxAHDm7wutCv-k9CDds8S5XWs-UTrKNkH6NFJXhGveD83b-Qhms9sGg=w526-h296',
+      'https://play-lh.googleusercontent.com/kNPfXi5yzidHEpG1-wM2SX_X_66G9YZ8Mr0CbIrsOFTVwvAfupoo3tvhYX221G51yTi5ljK7z5j5rMuskOAdZGQ=w526-h296',
+      'https://play-lh.googleusercontent.com/57iU6rHyePIycjDxv8fOa2NsJAafDtc_Bwwc-um-h3_qP3PPRiw3z1DhHwu-MWpVXPLXmInsgppzMp2MHyOY=w526-h296',
+    ],
+    links: [L('Android app on Google Play', 'https://play.google.com/store/apps/details?id=com.payton.app&hl=en')],
+  },
+  {
+    id: 'chopwell', name: 'Chopwell Rider', tag: 'Commerce', kind: 'Mobile app', status: 'Live on Google Play', tone: 'clay',
+    summary: 'Android app for dispatch riders who deliver meals on Chopwell, built so riders can earn from every delivery.',
+    outcomes: [['10+', 'Downloads'], ['Android', 'Rider app']],
+    features: ['Delivery app for dispatch riders', 'Meal orders for the Chopwell platform', 'Uses rider location during deliveries'],
+    shots: [
+      'https://play-lh.googleusercontent.com/yX4J1WrRjk2G1z5xykAY9He2AmtCaUOawmD9U-cxOTTeaR9UMRI0rtPFhRKwofEzNNVkQqzVM2yvzdDOG4CV=w526-h296',
+      'https://play-lh.googleusercontent.com/48_52uRMPnzcEGBulMfXyoUGazo0dx9NeewcTzMPtzaMHraKY0z8iJ3eWNcERNNHO6X7iilrcaWe8ogIZNpYDQ=w526-h296',
+      'https://play-lh.googleusercontent.com/EG9EOK9Lg_bP8NjPemfC9QPWcRkGEpuy5Q6YTdf51-1sB6S1a6sz_NakPEOPEhst-XX3ByjjZ9WqLokZ_MTcyt8=w526-h296',
+    ],
+    links: [L('Android app on Google Play', 'https://play.google.com/store/apps/details?id=chopwell.rider&hl=en')],
+  },
+  {
+    id: 'circlepay', name: 'CirclePay', tag: 'Fintech', kind: 'Website', status: 'Live', tone: 'sand',
+    summary: 'Financial platform for savings circles, cooperatives and community groups, with treasury, governance and group finance tools in place of WhatsApp groups and spreadsheets.',
+    outcomes: [['3', 'Core areas: treasury, governance, group finance'], ['Web', 'Platform']],
+    features: ['Treasury tools for group funds', 'Governance tools for members', 'Collective finance for savings circles and cooperatives'],
+    shots: ['/circlepay-1.png', '/circlepay-2.png'],
+    links: [L('Live website', 'https://circlepaytech.com/')],
+  },
+  {
+    id: 'propx', name: 'PropX', tag: 'Commerce', kind: 'Website', status: 'Demo live on Vercel', tone: 'blue', fit: 'cover',
+    summary: 'Website for a Port Harcourt property practice, with home, listings, about and contact pages.',
+    outcomes: [['4', 'Pages'], ['PH', 'Port Harcourt']],
+    features: ['Property listings page', 'About and contact pages', 'Enquiry form'],
+    shots: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+    ],
+    links: [L('Live website', 'https://propx-phi.vercel.app/')],
   },
 ];
 
@@ -125,14 +180,6 @@ const PRINCIPLES = [
 
 /* ───────────── helpers ───────────── */
 
-const EXT: Record<Ext, { c: string; l: string }> = {
-  pdf: { c: '#C4452F', l: 'PDF' },
-  xlsx: { c: '#2F6B4B', l: 'XLS' },
-  docx: { c: '#2B4A9B', l: 'DOC' },
-  pptx: { c: '#C9662A', l: 'PPT' },
-  gantt: { c: '#6B4AA8', l: 'GNT' },
-};
-const wk = (d: string) => parseInt(d.replace(/\D/g, ''), 10) || 1;
 const CSS = `html{scroll-behavior:smooth}
 .ema{--ink:#0C1511;--mute:#5E675F;--line:#D9D5C7;--paper:#F4F1E8;--card:#FFFFFF;--acc:#0E3B2C;--lime:#D9F36B;--coral:#FF7A59;--lilac:#CDBEFF}
 .f-sans{font-family:var(--f-sans),system-ui,sans-serif}
@@ -161,110 +208,41 @@ const CSS = `html{scroll-behavior:smooth}
 ::selection{background:var(--lime);color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.rv,.word,.mq,.mqr,.spin,.bob,.fdoc,.up{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}}`;
 
-function Thumb({ file, p }: { file: FileItem; p: Project }) {
-  const c = EXT[file.ext].c;
-  return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md border border-[var(--line)] bg-white p-2.5">
-      <span className="absolute right-1.5 top-1.5 rounded-sm px-1 py-px text-[7px] font-semibold text-white" style={{ background: c }}>{EXT[file.ext].l}</span>
-      {(file.ext === 'pdf' || file.ext === 'docx') && (
-        <div className="space-y-[5px] pt-2">
-          <div className="mb-2 h-[6px] w-1/2 rounded-sm" style={{ background: c }} />
-          {[100, 92, 96, 70, 98, 60].map((w, i) => <div key={i} className="h-[3px] rounded-full bg-black/10" style={{ width: `${w}%` }} />)}
-        </div>
-      )}
-      {file.ext === 'xlsx' && (
-        <div className="grid grid-cols-4 gap-[3px] pt-4">
-          {Array.from({ length: 24 }, (_, i) => <div key={i} className="h-2.5 rounded-[2px]" style={{ background: i < 4 ? c : 'rgba(0,0,0,.07)' }} />)}
-        </div>
-      )}
-      {file.ext === 'pptx' && (
-        <div className="pt-4">
-          <div className="aspect-video rounded-sm bg-[var(--ink)] p-1.5 text-[14px] font-semibold leading-none text-white">{p.outcomes[0][0]}</div>
-          <div className="mt-1.5 grid grid-cols-3 gap-1">{[0, 1, 2].map((i) => <div key={i} className="aspect-video rounded-[2px] bg-black/10" />)}</div>
-        </div>
-      )}
-      {file.ext === 'gantt' && (
-        <div className="space-y-1.5 pt-5">
-          {p.milestones.map((m, i) => <div key={i} className="h-2 rounded-sm" style={{ marginLeft: `${i * 14}%`, width: '38%', background: c, opacity: 0.8 - i * 0.12 }} />)}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Preview({ file, p }: { file: FileItem; p: Project }) {
-  const e = EXT[file.ext];
-  const title = file.name.replace(/-/g, ' ');
-  const maxW = Math.max(...p.milestones.map((m) => wk(m[1]))) + 2;
-  return (
-    <div className="overflow-hidden rounded-xl border border-[var(--line)] bg-white">
-      <div className="flex items-center justify-between border-b border-[var(--line)] px-4 py-2.5">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="rounded-sm px-1.5 py-0.5 text-[9px] font-semibold text-white" style={{ background: e.c }}>{e.l}</span>
-          <span className="truncate text-[13px] font-medium">{file.name}.{file.ext}</span>
-        </div>
-        <span className="text-[11px] text-[var(--mute)]">{file.size}</span>
+function Shot({ src, p, fit = 'cover', className = '' }: { src?: string; p: Project; fit?: 'cover' | 'contain'; className?: string }) {
+  const [bad, setBad] = useState(false);
+  const t = TONES[p.tone];
+  if (!src || bad) {
+    return (
+      <div className={`grid place-items-center ${className}`} style={{ background: t.bg, color: t.ink }}>
+        <span className="f-display text-[clamp(28px,4vw,56px)]">{p.name.slice(0, 2)}</span>
       </div>
-      <div className="p-5">
-        <div className="text-[11px] text-[var(--mute)]">{p.name}</div>
-        <div className="f-serif mt-1 text-[28px] leading-tight">{title}</div>
-        {(file.ext === 'pdf' || file.ext === 'docx') && (
-          <div className="mt-4 text-[13px] leading-relaxed text-[var(--ink)]/75">
-            <p>{p.summary}</p>
-            <ul className="mt-4 space-y-1">
-              {p.outcomes.map(([v, l]) => <li key={l}><b className="text-[var(--ink)]">{v}</b> {l.toLowerCase()}</li>)}
-            </ul>
-          </div>
-        )}
-        {file.ext === 'xlsx' && (
-          <div className="mt-4 overflow-hidden rounded-lg border border-[var(--line)] text-[12.5px]">
-            <div className="grid grid-cols-[1fr_60px_60px] bg-[var(--paper)] px-3 py-2 text-[10px] uppercase tracking-wide text-[var(--mute)]"><span>Milestone</span><span>Due</span><span className="text-right">Status</span></div>
-            {p.milestones.map(([l, d]) => (
-              <div key={l} className="grid grid-cols-[1fr_60px_60px] border-t border-[var(--line)] px-3 py-2"><span className="truncate pr-2">{l}</span><span className="text-[var(--mute)]">{d}</span><span className="text-right font-semibold" style={{ color: e.c }}>Done</span></div>
-            ))}
-          </div>
-        )}
-        {file.ext === 'pptx' && (
-          <div className="mt-4 aspect-video rounded-lg bg-[var(--ink)] p-5 text-white">
-            <div className="text-[10px] text-white/50">{p.year} · {p.duration}</div>
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              {p.outcomes.map(([v, l]) => <div key={l}><div className="f-serif text-[30px] leading-none">{v}</div><div className="mt-1 text-[10px] text-white/60">{l}</div></div>)}
-            </div>
-          </div>
-        )}
-        {file.ext === 'gantt' && (
-          <div className="mt-4 space-y-3">
-            {p.milestones.map(([l, d], i) => {
-              const end = (wk(d) / maxW) * 100;
-              const start = i === 0 ? 0 : (wk(p.milestones[i - 1][1]) / maxW) * 100;
-              return (
-                <div key={l}>
-                  <div className="mb-1 flex justify-between text-[12px]"><span>{l}</span><span className="text-[var(--mute)]">{d}</span></div>
-                  <div className="relative h-2 rounded-full bg-black/[0.06]"><div className="absolute h-full rounded-full" style={{ left: `${start}%`, width: `${Math.max(8, end - start)}%`, background: e.c }} /></div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setBad(true)} className={`${fit === 'cover' ? 'object-cover' : 'object-contain'} ${className}`} />
   );
 }
 
 function Folder({ p }: { p: Project }) {
   const t = TONES[p.tone];
+  const n = Math.max(1, Math.min(3, p.shots.length));
+  const cls = n === 1 ? [1] : n === 2 ? [0, 2] : [0, 1, 2];
+  const left = n === 1 ? [33] : n === 2 ? [20, 46] : [9, 30, 51];
   return (
-    <div className="fold relative h-[170px] w-full">
+    <div className="fold relative h-[190px] w-full">
       <div className="absolute left-4 top-0 h-6 w-20 rounded-t-lg" style={{ background: t.ink }} />
       <div className="absolute inset-x-0 bottom-0 top-4 rounded-xl" style={{ background: t.ink }} />
-      {p.files.slice(0, 3).map((file, i) => (
-        <div key={file.name} className={`fdoc fdoc${i} absolute bottom-10 w-[34%] origin-bottom`} style={{ left: `${9 + i * 21}%`, zIndex: i }}>
-          <Thumb file={file} p={p} />
+      {cls.map((c, i) => (
+        <div key={i} className={`fdoc fdoc${c} absolute bottom-10 w-[34%] origin-bottom`} style={{ left: `${left[i]}%`, zIndex: i }}>
+          <div className="aspect-[4/5] w-full overflow-hidden rounded-md border border-[var(--line)] bg-white shadow-[0_6px_16px_rgba(0,0,0,.18)]">
+            <Shot src={p.shots[i]} p={p} className="h-full w-full" />
+          </div>
         </div>
       ))}
       <div className="absolute inset-x-0 bottom-0 z-10 h-[56%] rounded-xl" style={{ background: t.bg }}>
         <div className="flex h-full items-end justify-between px-4 pb-3 text-[11px] font-semibold" style={{ color: t.ink }}>
-          <span>{p.files.length} files</span><span>{p.year}</span>
+          <span>{p.tag}</span><span>{p.kind}</span>
         </div>
       </div>
     </div>
@@ -343,17 +321,18 @@ const label = 'f-mono text-[12.5px] uppercase tracking-[0.14em]';
 
 function Explorer() {
   const [open, setOpen] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'All' | Project['tag']>('All');
-  const tags: ('All' | Project['tag'])[] = ['All', 'Infrastructure', 'Service', 'People'];
+  const [shot, setShot] = useState(0);
+  const [filter, setFilter] = useState<'All' | Tag>('All');
+  const top = useRef<HTMLDivElement>(null);
+  const tags: ('All' | Tag)[] = ['All', 'Fintech', 'Commerce', 'Impact'];
   const list = PROJECTS.filter((p) => filter === 'All' || p.tag === filter);
   const proj = PROJECTS.find((p) => p.id === open) ?? null;
   const t = proj ? TONES[proj.tone] : null;
-  const file = proj ? proj.files.find((x) => x.name === fileName) ?? proj.files[0] : null;
-  const close = () => { setOpen(null); setFileName(null); };
+  const close = () => { setOpen(null); setShot(0); };
+  const show = (id: string) => { setOpen(id); setShot(0); top.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 
   return (
-    <div>
+    <div ref={top} className="scroll-mt-24">
       <div className="flex flex-wrap items-center gap-2">
         {tags.map((tg) => (
           <button
@@ -367,68 +346,86 @@ function Explorer() {
         {proj ? <button onClick={close} className="ml-auto text-[14px] font-medium underline underline-offset-4">&larr; All projects</button> : null}
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)]">
-        <div className="grid lg:grid-cols-[1fr_400px]">
-          <div className="min-h-[520px] p-6 md:p-8" key={open ?? 'root'}>
-            {!proj ? (
-              <div className="up grid grid-cols-1 gap-x-6 gap-y-12 pt-4 sm:grid-cols-2 xl:grid-cols-3">
-                {list.map((p) => (
-                  <button key={p.id} onClick={() => { setOpen(p.id); setFileName(p.files[0].name); }} className="text-left">
-                    <Folder p={p} />
-                    <div className="mt-4 text-[17px] font-semibold leading-snug tracking-tight">{p.name}</div>
-                    <div className="mt-1 text-[13px] text-[var(--mute)]">{p.outcomes.slice(0, 2).map(([v, l]) => `${v} ${l.toLowerCase()}`).join(' · ')}</div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="up">
-                <div className="flex flex-wrap items-center gap-3 text-[12px]">
-                  <span className="rounded-full px-3 py-1 font-semibold" style={{ background: t!.bg, color: t!.ink }}>{proj.tag}</span>
-                  <span className="text-[var(--mute)]">{proj.year} · {proj.duration} · {proj.team}</span>
+      <div className="mt-8 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] p-6 md:p-10" key={open ?? 'root'}>
+        {!proj || !t ? (
+          <div className="up grid grid-cols-1 gap-x-6 gap-y-12 pt-2 sm:grid-cols-2 xl:grid-cols-3">
+            {list.map((p) => (
+              <button key={p.id} onClick={() => show(p.id)} className="text-left">
+                <Folder p={p} />
+                <div className="mt-4 text-[17px] font-semibold leading-snug tracking-tight">{p.name}</div>
+                <div className="mt-1 text-[13px] text-[var(--mute)]">{p.outcomes.slice(0, 2).map(([v, l]) => `${v} ${l.toLowerCase()}`).join(' · ')}</div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="up">
+            <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-start">
+              <div>
+                <div className="overflow-hidden rounded-2xl" style={{ background: t.bg }}>
+                  <div className="aspect-[16/10] w-full">
+                    <Shot key={shot} src={proj.shots[shot]} p={proj} fit={proj.fit ?? 'contain'} className="h-full w-full" />
+                  </div>
                 </div>
-                <h3 className="f-serif mt-4 text-[clamp(34px,4vw,52px)] leading-[1.05]">{proj.name}</h3>
-                <p className="mt-3 max-w-[560px] text-[15.5px] leading-relaxed text-[var(--mute)]">{proj.summary}</p>
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                  {proj.outcomes.map(([v, l]) => (
-                    <div key={l} className="rounded-xl p-4" style={{ background: t!.bg }}>
-                      <div className="f-serif text-[34px] leading-none" style={{ color: t!.ink }}>{v}</div>
-                      <div className="mt-2 text-[12px] text-[var(--ink)]/70">{l}</div>
-                    </div>
+                {proj.shots.length > 1 && (
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    {proj.shots.map((src, i) => (
+                      <button
+                        key={src}
+                        onClick={() => setShot(i)}
+                        aria-label={`Show preview ${i + 1}`}
+                        className="aspect-[16/10] w-24 overflow-hidden rounded-lg transition"
+                        style={{ background: t.bg, outline: i === shot ? `2px solid ${t.ink}` : '2px solid transparent', outlineOffset: 2, opacity: i === shot ? 1 : 0.65 }}
+                      >
+                        <Shot src={src} p={proj} className="h-full w-full" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="flex flex-wrap items-center gap-3 text-[12px]">
+                  <span className="rounded-full px-3 py-1 font-semibold" style={{ background: t.bg, color: t.ink }}>{proj.tag}</span>
+                  <span className="text-[var(--mute)]">{proj.kind} · {proj.status}</span>
+                </div>
+                <h3 className="f-serif mt-4 text-[clamp(34px,4vw,56px)] leading-[1.02]">{proj.name}</h3>
+                <p className="mt-4 max-w-[520px] text-[16px] leading-relaxed text-[var(--mute)]">{proj.summary}</p>
+                <div className="mt-7 text-[13px] font-medium text-[var(--mute)]">Delivered and in use</div>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {proj.links.map((l, i) => (
+                    <a
+                      key={l.url}
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`rounded-full px-6 py-3 text-[15px] font-semibold transition hover:-translate-y-0.5 ${i === 0 ? 'bg-[var(--acc)] text-white hover:bg-[var(--ink)]' : 'border border-[var(--ink)] hover:bg-[var(--lime)]'}`}
+                    >
+                      {l.label} ↗
+                    </a>
                   ))}
                 </div>
-                <div className="mb-3 mt-8 text-[13px] font-semibold">{proj.files.length} files · click one to preview</div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {proj.files.map((x) => {
-                    const on = file?.name === x.name;
-                    return (
-                      <button key={x.name} onClick={() => setFileName(x.name)} className="rounded-xl p-2 text-left transition" style={{ background: on ? t!.bg : 'transparent' }}>
-                        <Thumb file={x} p={proj} />
-                        <div className="mt-2 truncate px-1 text-[13px] font-medium">{x.name}.{x.ext}</div>
-                        <div className="px-1 text-[11px] text-[var(--mute)]">{x.size}</div>
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
-            )}
-          </div>
+            </div>
 
-          <aside className="border-t border-[var(--line)] p-6 lg:border-l lg:border-t-0" style={{ background: t ? t.bg + '88' : 'var(--paper)' }}>
-            {!proj || !file ? (
-              <div className="grid h-full min-h-[220px] place-items-center text-center">
-                <div>
-                  <div className="f-serif text-[28px]">Open a folder</div>
-                  <p className="mx-auto mt-2 max-w-[240px] text-[14px] leading-relaxed text-[var(--mute)]">Hover to peek inside. Click to read the plan, the budget and the reports.</p>
+            <div className={`mt-12 grid border-t border-[var(--ink)] ${proj.outcomes.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
+              {proj.outcomes.map(([v, l]) => (
+                <div key={l} className="border-b border-[var(--line)] py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0">
+                  <div className="f-serif text-[clamp(34px,4vw,52px)] leading-none" style={{ color: t.ink }}>{v}</div>
+                  <div className="mt-2 text-[14px] text-[var(--ink)]/70">{l}</div>
                 </div>
-              </div>
-            ) : (
-              <div key={proj.id + file.name} className="up">
-                <div className="mb-3 text-[13px] font-semibold">Preview</div>
-                <Preview file={file} p={proj} />
-              </div>
-            )}
-          </aside>
-        </div>
+              ))}
+            </div>
+
+            <div className="mt-10 grid gap-4 lg:grid-cols-[220px_1fr] lg:gap-10">
+              <h4 className="f-serif text-[28px] leading-none">What it does</h4>
+              <ul className="border-t border-[var(--ink)]">
+                {proj.features.map((x) => (
+                  <li key={x} className="border-b border-[var(--line)] py-4 text-[16px] leading-relaxed text-[var(--ink)]/85">{x}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -478,19 +475,16 @@ function Line({ children, delay }: { children: ReactNode; delay: number }) {
 function Hero() {
   const [y, setY] = useState(0);
   const [idx, setIdx] = useState(0);
-  const [ready, setReady] = useState(false);
   useEffect(() => {
     const on = () => setY(window.scrollY);
     window.addEventListener('scroll', on, { passive: true });
-    const r = setTimeout(() => setReady(true), 900);
     const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const t = still ? undefined : setInterval(() => setIdx((i) => (i + 1) % ROTATE.length), 2200);
-    return () => { window.removeEventListener('scroll', on); clearTimeout(r); if (t) clearInterval(t); };
+    return () => { window.removeEventListener('scroll', on); if (t) clearInterval(t); };
   }, []);
   const initials = PERSON.name.split(' ').map((w) => w[0]).join('');
-  const cur = PROJECTS[0];
-  const now = wk(cur.milestones[2][1]);
-  const total = wk(cur.milestones[cur.milestones.length - 1][1]);
+  const cur = PROJECTS.find((x) => x.id === 'skribe') ?? PROJECTS[0];
+  const link = cur.links[0];
   return (
     <section id="top" className="relative flex min-h-screen flex-col justify-between overflow-hidden bg-[var(--acc)] px-5 pb-10 pt-28 text-[var(--paper)] md:px-10">
       <div className="pointer-events-none absolute -right-40 -top-40 h-[620px] w-[620px] rounded-full bg-[#14503C]" style={{ transform: `translateY(${y * 0.15}px)` }} />
@@ -499,8 +493,7 @@ function Hero() {
       <div className="relative mx-auto flex w-full max-w-[1400px] items-center justify-between">
         <div className={`${label} text-[var(--lime)]`}>(&nbsp;{PERSON.role}&nbsp;)</div>
         <div className={`${label} flex items-center gap-2.5`}>
-          <span className="relative flex h-2.5 w-2.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--lime)] opacity-70" /><span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--lime)]" /></span>
-          Available for new projects
+          {PERSON.location}
         </div>
       </div>
 
@@ -546,16 +539,16 @@ function Hero() {
         <div className="lg:col-span-4 lg:col-start-7">
           <div className="rounded-2xl bg-[var(--paper)] p-5 text-[var(--ink)]">
             <div className="flex items-center justify-between">
-              <span className={`${label} text-[var(--acc)]`}>Now delivering</span>
-              <span className="f-mono text-[12px] text-[var(--mute)]">{cur.year}</span>
+              <span className={`${label} text-[var(--acc)]`}>Latest work</span>
+              <span className="f-mono text-[12px] text-[var(--mute)]">{cur.kind}</span>
             </div>
             <div className="f-serif mt-3 text-[22px] leading-tight">{cur.name}</div>
-            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-black/10">
-              <div className="h-full rounded-full bg-[var(--acc)] transition-all duration-[1600ms] ease-out" style={{ width: ready ? `${(now / total) * 100}%` : '0%' }} />
-            </div>
-            <div className="f-mono mt-2 flex justify-between text-[11.5px] text-[var(--mute)]">
-              <span>{cur.milestones[2][0]}</span><span>Wk {now} / {total}</span>
-            </div>
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--mute)]">{cur.status}</p>
+            {link?.url ? (
+              <a href={link.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block rounded-full bg-[var(--acc)] px-5 py-2.5 text-[14px] font-medium text-white transition hover:bg-[var(--ink)]">
+                {link.label} ↗
+              </a>
+            ) : null}
           </div>
         </div>
 
@@ -593,7 +586,7 @@ function Work() {
         <Reveal>
           <div className={`${label} text-[var(--acc)]`}>01 &mdash; Work</div>
           <h2 className="f-display mt-4 max-w-[1000px] text-[clamp(48px,8vw,124px)] leading-[0.92]">Every project, filed and finished.</h2>
-          <p className="mt-6 max-w-[520px] text-[18px] leading-relaxed text-[var(--mute)]">Hover a folder to peek inside. Open it to see the plan, the numbers and the paperwork behind it.</p>
+          <p className="mt-6 max-w-[520px] text-[18px] leading-relaxed text-[var(--mute)]">Hover a folder to peek inside. Open it to see what the project is, what it does and where to try it.</p>
         </Reveal>
         <Reveal delay={150} className="mt-14"><Explorer /></Reveal>
       </div>
@@ -702,6 +695,10 @@ function Contact() {
             <span className="min-w-0 truncate">{PERSON.email}</span>
             <span className="transition-transform duration-500 group-hover:-rotate-45">&rarr;</span>
           </a>
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2 text-[18px] text-[var(--paper)]/75">
+            <a href={`tel:${PERSON.phoneRaw}`} className="transition hover:text-[var(--lime)]">{PERSON.phone}</a>
+            <span>{PERSON.location}</span>
+          </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <button
               onClick={() => navigator.clipboard?.writeText(PERSON.email).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800); }, () => {})}
@@ -709,7 +706,9 @@ function Contact() {
             >
               {copied ? 'Copied ✓' : 'Copy email'}
             </button>
-            <a href={PERSON.linkedin} className="rounded-full border border-[var(--paper)]/40 px-7 py-3.5 text-[16px] font-semibold transition hover:bg-[var(--paper)] hover:text-[var(--ink)]">LinkedIn &nearr;</a>
+            {PERSON.linkedin !== '#' && (
+              <a href={PERSON.linkedin} className="rounded-full border border-[var(--paper)]/40 px-7 py-3.5 text-[16px] font-semibold transition hover:bg-[var(--paper)] hover:text-[var(--ink)]">LinkedIn ↗</a>
+            )}
           </div>
         </Reveal>
         <div className="mt-24 flex flex-wrap items-center justify-between gap-4 text-[14px] text-[var(--paper)]/50">
@@ -727,7 +726,7 @@ export default function Page() {
   return (
     <div className={`ema ${display.variable} ${sans.variable} ${mono.variable} f-sans min-h-screen overflow-x-hidden bg-[var(--paper)] text-[var(--ink)] antialiased`}>
       <title>{`${PERSON.name} · ${PERSON.role}`}</title>
-      <meta name="description" content={`${PERSON.name} is a ${PERSON.role.toLowerCase()}. ${PERSON.intro}`} />
+      <meta name="description" content={`${PERSON.name} is a ${PERSON.role.toLowerCase()} based in ${PERSON.location}. ${PERSON.intro}`} />
       <style>{CSS}</style>
       <Nav />
       <main>
